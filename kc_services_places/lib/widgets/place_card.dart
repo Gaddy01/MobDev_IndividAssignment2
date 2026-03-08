@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/place_listing.dart';
+import '../config/app_theme.dart';
 
-class PlaceCard extends StatelessWidget {
+class PlaceCard extends StatefulWidget {
   final PlaceListing listing;
   final VoidCallback onTap;
   final bool showActions;
@@ -18,98 +19,228 @@ class PlaceCard extends StatelessWidget {
   });
 
   @override
+  State<PlaceCard> createState() => _PlaceCardState();
+}
+
+class _PlaceCardState extends State<PlaceCard> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Color _getCategoryColor(int index) {
+    final colors = [
+      AppTheme.primaryPurple,
+      AppTheme.primaryBlue,
+      AppTheme.accentPink,
+      AppTheme.accentOrange,
+    ];
+    return colors[index % colors.length];
+  }
+
+  IconData _getCategoryIcon() {
+    if (widget.listing.categories.isEmpty) return Icons.place_rounded;
+    
+    final category = widget.listing.categories.first;
+    switch (category.toString().split('.').last) {
+      case 'cafe':
+        return Icons.local_cafe_rounded;
+      case 'restaurant':
+        return Icons.restaurant_rounded;
+      case 'hospital':
+        return Icons.local_hospital_rounded;
+      case 'library':
+        return Icons.local_library_rounded;
+      case 'park':
+        return Icons.park_rounded;
+      default:
+        return Icons.place_rounded;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      color: Colors.white.withOpacity(0.1),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+    return GestureDetector(
+      onTapDown: (_) => _controller.forward(),
+      onTapUp: (_) {
+        _controller.reverse();
+        widget.onTap();
+      },
+      onTapCancel: () => _controller.reverse(),
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: AppTheme.mediumRadius,
+            boxShadow: AppTheme.cardShadow,
+          ),
+          child: ClipRRect(
+            borderRadius: AppTheme.mediumRadius,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Image section with gradient overlay
+                Stack(
                   children: [
-                    Text(
-                      listing.name,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                    Container(
+                      height: 140,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            _getCategoryColor(0).withOpacity(0.7),
+                            _getCategoryColor(1).withOpacity(0.9),
+                          ],
+                        ),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          _getCategoryIcon(),
+                          size: 50,
+                          color: Colors.white.withOpacity(0.9),
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Wrap(
-                      spacing: 4,
-                      runSpacing: 4,
-                      children: listing.categories.map((category) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.amber.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: Colors.amber.withOpacity(0.5),
-                              width: 1,
+                    // Category chips overlay
+                    Positioned(
+                      top: 12,
+                      right: 12,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.95),
+                          borderRadius: AppTheme.smallRadius,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
                             ),
+                          ],
+                        ),
+                        child: Text(
+                          widget.listing.categories.isNotEmpty 
+                              ? widget.listing.categories.first.displayName
+                              : 'Place',
+                          style: AppTheme.bodySmall.copyWith(
+                            color: _getCategoryColor(0),
+                            fontWeight: FontWeight.bold,
                           ),
-                          child: Text(
-                            category.displayName,
-                            style: const TextStyle(
-                              fontSize: 10,
-                              color: Colors.amber,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      listing.address,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.white60,
+                        ),
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
-              ),
-              if (showActions)
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.edit, color: Colors.amber, size: 20),
-                      onPressed: onEdit,
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red, size: 20),
-                      onPressed: onDelete,
-                    ),
-                  ],
-                )
-              else
-                const Column(
-                  children: [
-                    Icon(
-                      Icons.chevron_right,
-                      color: Colors.white38,
-                    ),
-                  ],
+                // Content section
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              widget.listing.name,
+                              style: AppTheme.headingSmall,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          if (!widget.showActions)
+                            Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: AppTheme.lightBg,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                size: 14,
+                                color: AppTheme.primaryPurple,
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.location_on_rounded,
+                            size: 16,
+                            color: AppTheme.lightText,
+                          ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              widget.listing.address,
+                              style: AppTheme.bodySmall,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (widget.showActions) ...[
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: widget.onEdit,
+                                icon: const Icon(Icons.edit_rounded, size: 18),
+                                label: const Text('Edit'),
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: AppTheme.primaryPurple,
+                                  side: BorderSide(color: AppTheme.primaryPurple.withOpacity(0.5)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: AppTheme.smallRadius,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: widget.onDelete,
+                                icon: const Icon(Icons.delete_rounded, size: 18),
+                                label: const Text('Delete'),
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: AppTheme.accentPink,
+                                  side: BorderSide(color: AppTheme.accentPink.withOpacity(0.5)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: AppTheme.smallRadius,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ],
+                  ),
                 ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

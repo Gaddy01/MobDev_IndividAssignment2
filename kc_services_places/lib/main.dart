@@ -8,6 +8,7 @@ import 'providers/settings_provider.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/email_verification_screen.dart';
 import 'screens/main_screen.dart';
+import 'config/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,15 +32,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Kigali City Services',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryColor: Colors.amber,
-          scaffoldBackgroundColor: const Color(0xFF1A2332),
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.amber,
-            brightness: Brightness.dark,
-          ),
-          useMaterial3: true,
-        ),
+        theme: AppTheme.lightTheme,
         home: const AuthWrapper(),
       ),
     );

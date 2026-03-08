@@ -4,6 +4,7 @@ import '../providers/listings_provider.dart';
 import '../providers/auth_provider.dart';
 import '../models/place_listing.dart';
 import '../widgets/place_card.dart';
+import '../config/app_theme.dart';
 import 'place_form_screen.dart';
 import 'place_detail_screen.dart';
 
@@ -31,52 +32,106 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1A2332),
+      backgroundColor: AppTheme.lightBg,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: AppTheme.primaryGradient,
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(32),
+                  bottomRight: Radius.circular(32),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.primaryPurple.withOpacity(0.3),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'My Listings',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const PlaceFormScreen(),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      );
-                    },
-                    icon: const Icon(Icons.add),
-                    label: const Text('Add'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.amber,
-                      foregroundColor: const Color(0xFF1A2332),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        child: const Icon(
+                          Icons.bookmark_rounded,
+                          color: Colors.white,
+                          size: 24,
+                        ),
                       ),
+                      const SizedBox(width: 12),
+                      Text(
+                        'My Listings',
+                        style: AppTheme.headingLarge.copyWith(
+                          color: Colors.white,
+                          fontSize: 26,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const PlaceFormScreen(),
+                          ),
+                        );
+                      },
+                      icon: Icon(Icons.add_rounded, color: AppTheme.primaryPurple),
+                      tooltip: 'Add New Listing',
                     ),
                   ),
                 ],
               ),
             ),
+            const SizedBox(height: 20),
             Expanded(
               child: Consumer<ListingsProvider>(
                 builder: (context, listingsProvider, child) {
                   if (listingsProvider.isLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              gradient: AppTheme.primaryGradient,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            'Loading your listings...',
+                            style: AppTheme.bodyMedium,
+                          ),
+                        ],
                       ),
                     );
                   }
@@ -88,26 +143,27 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            Icons.add_location_alt,
-                            size: 64,
-                            color: Colors.white38,
+                          Container(
+                            padding: const EdgeInsets.all(24),
+                            decoration: BoxDecoration(
+                              color: AppTheme.lightText.withOpacity(0.1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.add_location_alt_rounded,
+                              size: 64,
+                              color: AppTheme.lightText,
+                            ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 20),
                           Text(
                             'No listings yet',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.white60,
-                            ),
+                            style: AppTheme.headingMedium,
                           ),
                           const SizedBox(height: 8),
                           Text(
                             'Tap the + button to add your first listing',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.white38,
-                            ),
+                            style: AppTheme.bodyMedium,
                           ),
                         ],
                       ),
@@ -115,7 +171,7 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
                   }
 
                   return ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     itemCount: myListings.length,
                     itemBuilder: (context, index) {
                       final listing = myListings[index];
