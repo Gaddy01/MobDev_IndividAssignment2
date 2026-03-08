@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "857441261111",
+    "project_id": "kc-services-places",
+    "storage_bucket": "kc-services-places.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:857441261111:android:c04c8ca405367628a751b2",
+        "android_client_info": {
+          "package_name": "com.example.kc_services_places"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmF4EhuZ72jzUMSi99AuPgoBD2w2ys2-0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
