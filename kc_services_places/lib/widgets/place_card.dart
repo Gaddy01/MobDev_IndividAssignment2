@@ -198,44 +198,40 @@ class _PlaceCardState extends State<PlaceCard> with SingleTickerProviderStateMix
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                        ],
-                      ),
-                      if (widget.showActions) ...[
-                        const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: OutlinedButton.icon(
+                          if (widget.showActions) ...[
+                            const SizedBox(width: 8),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: AppTheme.primaryPurple.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: IconButton(
                                 onPressed: widget.onEdit,
-                                icon: const Icon(Icons.edit_rounded, size: 18),
-                                label: const Text('Edit'),
-                                style: OutlinedButton.styleFrom(
-                                  foregroundColor: AppTheme.primaryPurple,
-                                  side: BorderSide(color: AppTheme.primaryPurple.withOpacity(0.5)),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: AppTheme.smallRadius,
-                                  ),
-                                ),
+                                icon: const Icon(Icons.edit_rounded, size: 20),
+                                color: AppTheme.primaryPurple,
+                                padding: const EdgeInsets.all(8),
+                                constraints: const BoxConstraints(),
+                                tooltip: 'Edit',
                               ),
                             ),
                             const SizedBox(width: 8),
-                            Expanded(
-                              child: OutlinedButton.icon(
+                            Container(
+                              decoration: BoxDecoration(
+                                color: AppTheme.accentPink.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: IconButton(
                                 onPressed: widget.onDelete,
-                                icon: const Icon(Icons.delete_rounded, size: 18),
-                                label: const Text('Delete'),
-                                style: OutlinedButton.styleFrom(
-                                  foregroundColor: AppTheme.accentPink,
-                                  side: BorderSide(color: AppTheme.accentPink.withOpacity(0.5)),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: AppTheme.smallRadius,
-                                  ),
-                                ),
+                                icon: const Icon(Icons.delete_rounded, size: 20),
+                                color: AppTheme.accentPink,
+                                padding: const EdgeInsets.all(8),
+                                constraints: const BoxConstraints(),
+                                tooltip: 'Delete',
                               ),
                             ),
                           ],
-                        ),
-                      ],
+                        ],
+                      ),
                     ],
                   ),
                 ),
