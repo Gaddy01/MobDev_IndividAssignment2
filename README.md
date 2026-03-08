@@ -306,7 +306,3 @@ Developed by: Gaddiel Irakoze
 Institution: African Leadership University  
 Course: Mobile Application Development  
 Date: March 2026
-
----
-
-**Note**: This application is designed for Kigali City and uses Kigali coordinates as default location (-1.9441, 30.0619).
