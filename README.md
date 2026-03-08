@@ -302,7 +302,7 @@ This project is created for academic purposes as part of Mobile Application Deve
 
 ## 👨‍💻 Developer
 
-Developed by: Gaddiel Irakoze
+Developed by: Gaddiel Irakoze  
 Institution: African Leadership University  
 Course: Mobile Application Development  
 Date: March 2026
