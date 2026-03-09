@@ -110,8 +110,12 @@ class AuthProvider with ChangeNotifier {
   Future<void> reloadUser() async {
     await _authService.reloadUser();
     _user = _authService.currentUser;
-    if (_user != null && _user!.emailVerified) {
-      await _authService.updateEmailVerificationStatus(_user!.uid, true);
+    if (_user != null) {
+      // Reload user profile to ensure consistency
+      await _loadUserProfile(_user!.uid);
+      if (_user!.emailVerified) {
+        await _authService.updateEmailVerificationStatus(_user!.uid, true);
+      }
     }
     notifyListeners();
   }

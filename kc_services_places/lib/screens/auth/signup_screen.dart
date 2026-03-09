@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../config/app_theme.dart';
-import 'email_verification_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -54,19 +53,14 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
     if (_formKey.currentState!.validate()) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       
-      final success = await authProvider.signUp(
+      await authProvider.signUp(
         email: _emailController.text.trim(),
         password: _passwordController.text,
         displayName: _nameController.text.trim(),
       );
-
-      if (success && mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const EmailVerificationScreen(),
-          ),
-        );
-      }
+      
+      // AuthWrapper will automatically handle navigation based on auth state
+      // No manual navigation needed
     }
   }
 

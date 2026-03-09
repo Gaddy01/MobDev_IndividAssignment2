@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../config/app_theme.dart';
+import 'login_screen.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
   const EmailVerificationScreen({super.key});
@@ -167,7 +168,16 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   const SizedBox(height: 16),
                   TextButton(
                     onPressed: () async {
-                      await Provider.of<AuthProvider>(context, listen: false).signOut();
+                      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                      await authProvider.signOut();
+                      
+                      // Navigate back to login screen, removing all previous routes
+                      if (mounted) {
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => const LoginScreen()),
+                          (route) => false,
+                        );
+                      }
                     },
                     child: Text(
                       'Back to Login',

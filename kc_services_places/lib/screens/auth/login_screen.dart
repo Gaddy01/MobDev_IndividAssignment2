@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../config/app_theme.dart';
 import 'signup_screen.dart';
-import 'email_verification_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -50,20 +49,13 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     if (_formKey.currentState!.validate()) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       
-      final success = await authProvider.signIn(
+      await authProvider.signIn(
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
-
-      if (success && mounted) {
-        if (!authProvider.isEmailVerified) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => const EmailVerificationScreen(),
-            ),
-          );
-        }
-      }
+      
+      // AuthWrapper will automatically handle navigation based on auth state
+      // No manual navigation needed
     }
   }
 
